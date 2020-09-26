@@ -66,12 +66,20 @@ int main(int argc, char** argv){
 	int XTrows = Xcols;
 	int XTcols = Xrows;	
 
-	printMatrix(mat, Xrows, Xcols);
-	printMatrix(matTrans, XTrows, XTcols);
+	double** squareMat = multiplyMatrix(matTrans, mat, XTrows, XTcols, Xrows, Xcols);
+	int Sqrows = XTrows;
+	int Sqcols = Xcols;
+
+	
+
+	//printMatrix(mat, Xrows, Xcols);
+	//printMatrix(matTrans, XTrows, XTcols);
+	printMatrix(squareMat, Sqrows, Sqcols);
 
 	clearMatrix(matTrans, XTrows);
 	clearMatrix(mat, Xrows);
 	clearMatrix(Y, Yrows);
+	clearMatrix(squareMat, Sqrows);
 	return 0;
 }
 
@@ -83,16 +91,18 @@ double** multiplyMatrix(double **matA, double **matB, int r1, int c1, int r2, in
    	for (int i = 0; i<r1; i++){
 		result[i] = malloc(c2*sizeof(double));
 	}
-
+	
+	for(int i = 0; i < r1; i++){
+		for(int j = 0; j < c2; j++){
+			result[i][j] = 0;
+		}
+	}
+	
 	for (int i = 0; i < r1; i++){
 		for (int j = 0; j < c2; j++){
-			int temp = 0;
-			for(int k = 0; k < c1; k++){
-				for(int l = 0; l < r2; l++){
-					temp += matA[i][k] * matA[l][j];
-				}
+			for(int k = 0; k <r2; k++){
+				result[i][j] += matA[i][k] * matB[k][j];
 			}
-			result[i][j] = temp;
 		}
 	}
 
@@ -127,9 +137,24 @@ double** inverseMatrix(double **matA, int dimension)
 
 	double** matI=malloc(dimension*sizeof(double*)); 
 
-	// your code goes here
+	for(int i = 0; i < dimension; i++){
+		matI[i] = malloc(2*dimension*sizeof(double));
+	}
+
+		
+	for(int i = 0; i < dimension; i++){
+		for(int j = 0; j< dimension; j++){
+			matI[i][j] = matA[i][j];
+			if(i == j){
+				matI[i][j+dimension] = 1;	
+			}
+			else{
+				matI[i][j+dimension] = 0;
+			}
+		}
+	}
 	
-	
+	printMatrix(matI, dimension, 2*dimension);
 
     
 	return matI;
@@ -139,7 +164,7 @@ void printMatrix(double **matrix, int row, int col){
 	printf("\n");
 	for(int r = 0; r < row; r++){
 		for(int c = 0; c < col; c++){
-		       	printf("%le ", matrix[r][c]);
+		       	printf("%f ", matrix[r][c]);
 		}
 		printf("\n");
         }
