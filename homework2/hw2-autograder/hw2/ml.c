@@ -37,6 +37,9 @@ int main(int argc, char** argv){
 	fscanf(fp, "%d\n", &Xcols);
 	fscanf(fp, "%d\n", &Xrows);
 	
+	//For the Cols of Ones;
+	Xcols++;
+
 	double** mat = malloc(Xrows*sizeof(double*));
 	for(int i = 0; i < Xrows; i++){
 		mat[i] = malloc(Xcols*sizeof(double));
@@ -51,15 +54,22 @@ int main(int argc, char** argv){
 
 	for(int r = 0; r < Xrows; r++){
 		for(int c = 0; c < Xcols + 1; c++){
-			if(c<Xcols){
-				fscanf(fp, "%le, ", &mat[r][c]);
+			if(c == 0){
+				mat[r][0] = 1;
+			}
+			else if(c<Xcols){
+				fscanf(fp, "%lf, ", &mat[r][c]);
 			}
 			else{
-				fscanf(fp, "%le, ", &Y[r][0]);
+				fscanf(fp, "%lf, ", &Y[r][0]);
 			}
 		}
 		fscanf(fp, "\n");	
 	}
+
+	//printMatrix(mat, Xrows, Xcols);
+
+	fclose(fp);
 
 	double** matTrans = transposeMatrix(mat, Xrows, Xcols);
 	
@@ -74,9 +84,53 @@ int main(int argc, char** argv){
 		return 1;
 	}
 
-	double** W = multiplyMatrix((multiplyMatrix(inverseMat, matTrans, Sqdim, Sqdim, XTrows, XTcols)), Y, Sqdim, Sqdim, Yrows, Ycols); 
+
+	double** temp = multiplyMatrix(inverseMat, matTrans, Sqdim, Sqdim, XTrows, XTcols);
+
+	double** W = multiplyMatrix(temp, Y, Sqdim, Sqdim, Yrows, Ycols); 
 	int Wrows = XTrows;
-	//int Wcols = PRICE_COUNT;
+	int Wcols = PRICE_COUNT;
+
+	
+	//printMatrix(W, Wrows, Wcols);	
+
+	FILE* ft = fopen(argv[2], "r");
+
+	int TestRows;
+	int TestCols = Wrows;
+	
+	fscanf(ft, "%d\n", &TestRows);	
+
+	double** Test = malloc(TestRows*sizeof(double*));
+	for(int i = 0; i < TestRows; i++){
+		Test[i] = malloc(TestCols*sizeof(double));
+	}
+	
+	//printMatrix(Test, TestRows, TestCols);	
+
+	for(int r = 0; r < TestRows; r++){
+	       for(int c = 0; c < TestCols; c++){
+		       if(c == 0){
+			       Test[r][0] = 1;
+		       }
+		       else{
+			       fscanf(ft, "%lf, " , &Test[r][c]);
+		       }			       
+		}
+		fscanf(ft, "\n");
+	}
+	fclose(ft);
+	
+	//printMatrix(Test, TestRows, TestCols);
+
+	double** Answer = multiplyMatrix(Test, W, TestRows, TestCols, Wrows, Wcols);
+
+	
+	for(int r = 0; r < TestRows; r++){
+		for(int c = 0; c < Wcols; c++){
+			printf("%0.0lf\n", Answer[r][c]);
+		}
+	}	
 
 
 	//printMatrix(mat, Xrows, Xcols);
@@ -84,6 +138,11 @@ int main(int argc, char** argv){
 	//printMatrix(squareMat, Sqdim, Sqdim);
 	//printMatrix(inverseMat, Sqdim, Sqdim);
 	//printMatrix(W, Wrows, Wcols);
+	//printMatrix(Y, Yrows, Ycols);
+	
+	//printMatrix(Test, TestRows, TestCols);
+
+	//printMatrix(Answer, TestRows, Wcols);
 
 
 	clearMatrix(matTrans, XTrows);
@@ -91,7 +150,10 @@ int main(int argc, char** argv){
 	clearMatrix(Y, Yrows);
 	clearMatrix(squareMat, Sqdim);
 	clearMatrix(inverseMat, Sqdim);
+	clearMatrix(temp, Sqdim);
 	clearMatrix(W, Wrows);
+	clearMatrix(Test, TestRows);
+	clearMatrix(Answer, TestRows);
 	return 0;
 }
 
@@ -233,3 +295,4 @@ void clearMatrix(double **matrix, int row){
 	}
 	free(matrix);
 }
+
