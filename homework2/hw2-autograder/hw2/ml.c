@@ -17,7 +17,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 
-#define PRICE_COUNT 1
+#define PRICE_COUNT 1; 
 
 // all methods declarations
 double** multiplyMatrix(double **matA, double **matB, int r1, int c1, int r2, int c2);
@@ -47,7 +47,7 @@ int main(int argc, char** argv){
 		Y[i] = malloc(sizeof(double));
 	}
 	int Yrows = Xrows;
-	//int Ycols = PRICE_COUNT;
+	int Ycols = PRICE_COUNT;
 
 	for(int r = 0; r < Xrows; r++){
 		for(int c = 0; c < Xcols + 1; c++){
@@ -67,19 +67,31 @@ int main(int argc, char** argv){
 	int XTcols = Xrows;	
 
 	double** squareMat = multiplyMatrix(matTrans, mat, XTrows, XTcols, Xrows, Xcols);
-	int Sqrows = XTrows;
-	int Sqcols = Xcols;
-
+	int Sqdim = XTrows;
 	
+	double** inverseMat = inverseMatrix(squareMat, Sqdim);
+	if(inverseMat == NULL){
+		return 1;
+	}
+
+	double** W = multiplyMatrix((multiplyMatrix(inverseMat, matTrans, Sqdim, Sqdim, XTrows, XTcols)), Y, Sqdim, Sqdim, Yrows, Ycols); 
+	int Wrows = XTrows;
+	//int Wcols = PRICE_COUNT;
+
 
 	//printMatrix(mat, Xrows, Xcols);
 	//printMatrix(matTrans, XTrows, XTcols);
-	printMatrix(squareMat, Sqrows, Sqcols);
+	//printMatrix(squareMat, Sqdim, Sqdim);
+	//printMatrix(inverseMat, Sqdim, Sqdim);
+	//printMatrix(W, Wrows, Wcols);
+
 
 	clearMatrix(matTrans, XTrows);
 	clearMatrix(mat, Xrows);
 	clearMatrix(Y, Yrows);
-	clearMatrix(squareMat, Sqrows);
+	clearMatrix(squareMat, Sqdim);
+	clearMatrix(inverseMat, Sqdim);
+	clearMatrix(W, Wrows);
 	return 0;
 }
 
@@ -141,7 +153,8 @@ double** inverseMatrix(double **matA, int dimension)
 		matI[i] = malloc(2*dimension*sizeof(double));
 	}
 
-		
+	
+
 	for(int i = 0; i < dimension; i++){
 		for(int j = 0; j< dimension; j++){
 			matI[i][j] = matA[i][j];
@@ -153,11 +166,54 @@ double** inverseMatrix(double **matA, int dimension)
 			}
 		}
 	}
-	
-	printMatrix(matI, dimension, 2*dimension);
 
-    
-	return matI;
+	//printMatrix(matI, dimension, dimension*2);
+
+	for(int i = 0; i < dimension; i++){
+		float makeToOne = matI[i][i];
+		
+		for(int j = 0; j< dimension * 2; j++){
+			matI[i][j] = matI[i][j]/makeToOne;
+		}
+
+		//printMatrix(matI, dimension, dimension*2);
+
+		for(int r = i+1; r < dimension; r++){
+			double ratio = matI[r][i]/matI[i][i];
+			for(int c = 0; c < dimension*2; c++){
+				matI[r][c] = matI[r][c] - ratio*matI[i][c];
+			}
+		}
+
+		//printMatrix(matI, dimension, dimension*2);
+	}
+
+	for(int i = dimension-1; i > -1; i--){
+		for(int j = i-1; j > -1; j--){
+			double ratio = matI[j][i]/matI[i][i];
+			//printf("%f\n", ratio);
+			for(int c = 0; c<dimension*2; c++){
+				matI[j][c] = matI[j][c] - ratio * matI[i][c];
+			}
+		}
+		//printMatrix(matI, dimension, dimension*2);
+
+	}
+
+	double** result = malloc(dimension*sizeof(double*));
+	for(int i = 0; i < dimension; i++){
+		result[i] = malloc(dimension*sizeof(double));
+	}
+	
+	for(int i = 0; i < dimension; i++){
+		for(int j = 0;  j < dimension; j++){
+			result[i][j] = matI[i][j+dimension];
+		}
+	}	
+    	
+	clearMatrix(matI, dimension);
+
+	return result;
 }
 
 void printMatrix(double **matrix, int row, int col){
