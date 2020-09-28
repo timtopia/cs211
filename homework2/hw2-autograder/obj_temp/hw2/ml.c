@@ -67,7 +67,7 @@ int main(int argc, char** argv){
 		fscanf(fp, "\n");	
 	}
 
-	printMatrix(mat, Xrows, Xcols);
+	//printMatrix(mat, Xrows, Xcols);
 
 	fclose(fp);
 
@@ -99,11 +99,7 @@ int main(int argc, char** argv){
 	int TestRows;
 	int TestCols = Wrows;
 	
-	fscanf(ft, "%d\n", &TestRows);
-	
-	//For ZerothCol
-	TestCols++;
-
+	fscanf(ft, "%d\n", &TestRows);	
 
 	double** Test = malloc(TestRows*sizeof(double*));
 	for(int i = 0; i < TestRows; i++){
@@ -142,6 +138,10 @@ int main(int argc, char** argv){
 	//printMatrix(squareMat, Sqdim, Sqdim);
 	//printMatrix(inverseMat, Sqdim, Sqdim);
 	//printMatrix(W, Wrows, Wcols);
+	//printMatrix(Y, Yrows, Ycols);
+	
+	//printMatrix(Test, TestRows, TestCols);
+
 	//printMatrix(Answer, TestRows, Wcols);
 
 
