@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include <string.h>
 
@@ -5,8 +6,8 @@ int Add(int x, int y);
 
 int Subtract(int x, int y);
 
-int main(int argc, char* argv[])
-{
+int main(int argc, char* argv[]){
+
 	FILE* fp = fopen(argv[1], "r");
 
 	unsigned short Number;
