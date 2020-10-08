@@ -1,6 +1,10 @@
 #include <stdio.h>
 #include <string.h>
 
+int Add(int x, int y);
+
+int Subtract(int x, int y);
+
 int main(int argc, char* argv[])
 {
 	FILE* fp = fopen(argv[1], "r");
@@ -19,7 +23,7 @@ int main(int argc, char* argv[])
 			x = x << a;
 			int or = Number|x;
 			if(or == Number){
-				Number = Number - x;
+				Number = Subtract(Number,x);
 				printf("%hu\n", Number);	
 			}
 			else{
@@ -43,7 +47,7 @@ int main(int argc, char* argv[])
 				int x = 1;
 				x = x << a;
 				if((Number|x) == Number){
-					Number = Number - x;
+					Number = Subtract(Number, x);
 				}
 				printf("%hu\n", Number);
 			}
@@ -54,7 +58,7 @@ int main(int argc, char* argv[])
 					printf("%hu\n", Number);
 				}
 				else{
-					Number = Number + x;
+					Number = Add(Number, x);
 					printf("%hu\n", Number);
 				}
 			}
@@ -63,4 +67,28 @@ int main(int argc, char* argv[])
 		
 		}
 	}
+}
+
+int Add(int x, int y){
+	while (y != 0){
+		int carry = x & y;
+
+		x = x ^ y;
+		
+		y = carry << 1;
+	}
+
+	return x;
+}
+
+int Subtract(int x, int y){
+	while(y != 0){
+		int borrow = (~x) & y;
+
+		x = x ^ y;
+
+		y = borrow << 1;
+	}
+	
+	return x;
 }
