@@ -9,11 +9,11 @@ int main(int argc, char* argv[])
 	
 	for(int end = 0, beginning = 15; end < beginning; end++, beginning--){
 		if(get(num, end) != get(num, beginning)){
-			printf("Is-Palindrome\n");
+			printf("Not-Palindrome\n");
 			return 0;
 		}
 	}
-	printf("Not-Palindrome\n");
+	printf("Is-Palindrome\n");
 }
 
 int get(int number, int a){
