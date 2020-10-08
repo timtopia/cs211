@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <string.h>
-#include <math.h>
 
 int main(int argc, char* argv[])
 {
@@ -42,7 +41,7 @@ int main(int argc, char* argv[])
 		else if(strcmp(word, "set") == 0){
 			if(b == 0){
 				int x = 1;
-				x = x << (a-1);
+				x = x << a;
 				if((Number|x) == Number){
 					Number = Number - x;
 				}
@@ -55,7 +54,8 @@ int main(int argc, char* argv[])
 					printf("%hu\n", Number);
 				}
 				else{
-					printf("%hu\n", Number + x);
+					Number = Number + x;
+					printf("%hu\n", Number);
 				}
 			}
 		}
