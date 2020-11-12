@@ -16,17 +16,19 @@ int main(int argc, char* argv[])
 	int registers[4];
 	for(int j = 0; j<i; j++){
 		//printf("%s", text[j]);
+		char line[64];
+		strcpy(line, text[j]);
 		char command[6];
 		char op1[8];
 		char op2[8];
 		char op3[8];
-		strcpy(command, strtok(text[j], " "));
-		if(command[0]=='\0'){
+		strcpy(command, strtok(line, " "));
+		if(command[0]=='\n'){
 			continue;
 		}
 		if(strcmp(command, "mov")==0){
-			strcpy(op1, strtok(text[j], " "));
-			strcpy(op2, strtok(text[j], " "));
+			strcpy(op1, strtok(NULL, " "));
+			strcpy(op2, strtok(NULL, " "));
 			int reg = op2[0]-ASCIIconversion;
 			if(isdigit(op1[0])!=0){
 				registers[reg] = atoi(op1);
@@ -36,8 +38,8 @@ int main(int argc, char* argv[])
 			}
 		}
 		else if(strcmp(command, "add")==0){
-			strcpy(op1, strtok(text[j], " "));
-			strcpy(op2, strtok(text[j], " "));
+			strcpy(op1, strtok(NULL, " "));
+			strcpy(op2, strtok(NULL, " "));
 			int reg = op2[0]-ASCIIconversion;
 			if(isdigit(op1[0])!=0){
 				registers[reg] = atoi(op1)+registers[reg];
@@ -47,8 +49,8 @@ int main(int argc, char* argv[])
 			}
 		}	
 		else if(strcmp(command, "sub")==0){
-			strcpy(op1, strtok(text[j], " "));
-			strcpy(op2, strtok(text[j], " "));
+			strcpy(op1, strtok(NULL, " "));
+			strcpy(op2, strtok(NULL, " "));
 			int reg = op2[0]-ASCIIconversion;
 			if(isdigit(op1[0])!=0){
 				registers[reg] = registers[reg]-atoi(op1);
@@ -58,8 +60,8 @@ int main(int argc, char* argv[])
 			}
 		}
 		else if(strcmp(command, "mul")==0){
-			strcpy(op1, strtok(text[j], " "));
-			strcpy(op2, strtok(text[j], " "));
+			strcpy(op1, strtok(NULL, " "));
+			strcpy(op2, strtok(NULL, " "));
 			int reg = op2[0]-ASCIIconversion;
 			if(isdigit(op1[0])!=0){
 				registers[reg] = registers[reg]*atoi(op1);
@@ -69,8 +71,8 @@ int main(int argc, char* argv[])
 			}
 		}
 		else if(strcmp(command, "div")==0){
-			strcpy(op1, strtok(text[j], " "));
-			strcpy(op2, strtok(text[j], " "));
+			strcpy(op1, strtok(NULL, " "));
+			strcpy(op2, strtok(NULL, " "));
 			int reg = op2[0]-ASCIIconversion;
 			if(isdigit(op1[0])!=0){
 				registers[reg] = registers[reg]/atoi(op1);
@@ -80,38 +82,158 @@ int main(int argc, char* argv[])
 			}
 		}
 		else if(strcmp(command, "jmp")==0){
-			strcpy(op1, strtok(text[j], " "));
-			i = atoi(op1)-1; 
+			strcpy(op1, strtok(NULL, " "));
+			j = atoi(op1)-1; 
 		}
 		else if(strcmp(command, "je")==0){
-			
+			strcpy(op1, strtok(NULL, " "));
+			strcpy(op2, strtok(NULL, " "));
+			strcpy(op3, strtok(NULL, " "));
+			int line = atoi(op1)-1;
+			int x,y;
+			if(isdigit(op2[0])!=0){
+				x = atoi(op2);
+			}
+			else{
+				x = registers[op2[0]-ASCIIconversion];
+			}
+			if(isdigit(op3[0])!=0){
+				y = atoi(op3);
+			}
+			else{
+				y = registers[op3[0]-ASCIIconversion];
+			}
+			if(x==y){
+				j = line;
+			}
 		}
 		else if(strcmp(command, "jne")==0){
-			
+			strcpy(op1, strtok(NULL, " "));
+			strcpy(op2, strtok(NULL, " "));
+			strcpy(op3, strtok(NULL, " "));
+			int line = atoi(op1)-1;
+			int x,y;
+			if(isdigit(op2[0])!=0){
+				x = atoi(op2);
+			}
+			else{
+				x = registers[op2[0]-ASCIIconversion];
+			}
+			if(isdigit(op3[0])!=0){
+				y = atoi(op3);
+			}
+			else{
+				y = registers[op3[0]-ASCIIconversion];
+			}
+			if(x!=y){
+				j = line;
+			}
 		}
 		else if(strcmp(command, "jg")==0){
-			
+			strcpy(op1, strtok(NULL, " "));
+			strcpy(op2, strtok(NULL, " "));
+			strcpy(op3, strtok(NULL, " "));
+			int line = atoi(op1)-1;
+			int x,y;
+			if(isdigit(op2[0])!=0){
+				x = atoi(op2);
+			}
+			else{
+				x = registers[op2[0]-ASCIIconversion];
+			}
+			if(isdigit(op3[0])!=0){
+				y = atoi(op3);
+			}
+			else{
+				y = registers[op3[0]-ASCIIconversion];
+			}
+			if(x>y){
+				j = line;
+			}
 		}
 		else if(strcmp(command, "jge")==0){
-			
+			strcpy(op1, strtok(NULL, " "));
+			strcpy(op2, strtok(NULL, " "));
+			strcpy(op3, strtok(NULL, " "));
+			int line = atoi(op1)-1;
+			int x,y;
+			if(isdigit(op2[0])!=0){
+				x = atoi(op2);
+			}
+			else{
+				x = registers[op2[0]-ASCIIconversion];
+			}
+			if(isdigit(op3[0])!=0){
+				y = atoi(op3);
+			}
+			else{
+				y = registers[op3[0]-ASCIIconversion];
+			}
+			if(x>=y){
+				j = line;
+			}
 		}
 		else if(strcmp(command, "jl")==0){
-			
+			strcpy(op1, strtok(NULL, " "));
+			strcpy(op2, strtok(NULL, " "));
+			strcpy(op3, strtok(NULL, " "));
+			int line = atoi(op1)-1;
+			int x,y;
+			if(isdigit(op2[0])!=0){
+				x = atoi(op2);
+			}
+			else{
+				x = registers[op2[0]-ASCIIconversion];
+			}
+			if(isdigit(op3[0])!=0){
+				y = atoi(op3);
+			}
+			else{
+				y = registers[op3[0]-ASCIIconversion];
+			}
+			if(x<y){
+				j = line;
+			}
 		}
 		else if(strcmp(command, "jle")==0){
-			
+			strcpy(op1, strtok(NULL, " "));
+			strcpy(op2, strtok(NULL, " "));
+			strcpy(op3, strtok(NULL, " "));
+			int line = atoi(op1)-1;
+			int x,y;
+			if(isdigit(op2[0])!=0){
+				x = atoi(op2);
+			}
+			else{
+				x = registers[op2[0]-ASCIIconversion];
+			}
+			if(isdigit(op3[0])!=0){
+				y = atoi(op3);
+			}
+			else{
+				y = registers[op3[0]-ASCIIconversion];
+			}
+			//printf("\n%d %d\n", x, y);
+			if(x<=y){
+				j = line;
+			}
 		}
 		else if(strcmp(command, "read")==0){
-			strcpy(op1, strtok(text[j], " "));
+			strcpy(op1, strtok(NULL, " "));
 			char input[6];
 			fgets(input, 6, stdin);
 			registers[op1[0]-ASCIIconversion] = atoi(input);
 		}
 		else if(strcmp(command, "print")==0){
-			strcpy(op1, strtok(text[j], " "));
-			printf("%d\n", registers[op1[0]-ASCIIconversion]);
-		
-		}	
+			strcpy(op1, strtok(NULL, " "));
+			if(isdigit(op1[0])!=0){
+				printf("%d", atoi(op1));
+			}
+			else{
+				printf("%d\n", registers[op1[0]-ASCIIconversion]);
+			}
+		}
+		//printf("%d\n", j);	
 	}
 
 }
