@@ -75,10 +75,10 @@ int main(int argc, char* argv[])
 			strcpy(op2, strtok(NULL, " "));
 			int reg = op2[0]-ASCIIconversion;
 			if(isdigit(op1[0])!=0){
-				registers[reg] = registers[reg]/atoi(op1);
+				registers[reg] = atoi(op1)/registers[reg];
 			}
 			else{
-				registers[reg] = registers[reg]/registers[op1[0]-ASCIIconversion];
+				registers[reg] = registers[op1[0]-ASCIIconversion]/registers[reg];
 			}
 		}
 		else if(strcmp(command, "jmp")==0){
