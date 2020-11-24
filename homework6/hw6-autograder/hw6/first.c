@@ -11,8 +11,6 @@ int associativityComp(char* str);
 
 int main(int argc, char* argv[])
 {
-	int chachesize,lineperset;
-	
 	//check if argument count is right
 	if(argc != 6){
 		printf("error\n");
@@ -78,10 +76,25 @@ int main(int argc, char* argv[])
 		printf("error\n");
 		return 1;
 	}
-
-	printf("CHECKS CLEARNED\n");
-
 	
+	//check if argument 5 is right (file)
+	FILE* fp = fopen(argv[5], "r");
+	if(fp == NULL){
+		printf("error\n");
+		return 1;
+	}	
+
+	//printf("CHECKS CLEARNED\n");
+
+	//loop through
+	
+	char useless[12];
+	char command;
+	char memory[12];
+	while(fscanf(fp, "0x%s: %c 0x%s", &useless, &command, &memory) == 3){
+		
+	
+	}	
 }
 
 int power_of_2(int n)
