@@ -4,13 +4,92 @@
 #include <stdbool.h>
 #include <math.h>
 #include <string.h>
+ 
+typedef struct Cacheline{
+	int valid;
+	int replacement;
+	long tag;
+} Cacheline;
+
 
 int power_of_2(int n);
 
 int associativityComp(char* str);
 
+int checkParams(int argc, char* argv[]);
+
+char *binaryConversion(char address[]);
+
 int main(int argc, char* argv[])
 {
+	int params = checkParams(argc, argv);
+	if(params == 1){
+		return 0;
+	}
+	//set up params
+
+	
+	FILE* fp = fopen(argv[5], "r");
+	
+	unsigned long useless;
+	char command;
+	unsigned long memory;
+
+	int size = atoi(argv[1]);
+	int blocksize = atoi(argv[4]);
+	int assoc = 0;
+	if(strcmp(argv[2], "direct") == 0){
+		assoc = 1;
+	}
+	else if(strcmp(argv[2], "assoc") == 0){
+		assoc = size/blocksize;
+	}
+	else{
+		char* temp;
+		temp = strtok(argv[2],":");
+		temp = strtok(NULL, ":");
+		assoc = atoi(temp);
+	}
+
+	char replacement[5];
+	strcpy(replacement, argv[3]);
+
+	int numlines = size/blocksize;
+	int setnumber = numlines/assoc;
+	
+
+	int blockbits = log2(blocksize);
+	int setbits = log2(setnumber);
+	int setcomp = pow(2,setbits)-1;
+	//CREATION OF THE CACHE
+	
+	Cacheline* cache[setnumber][assoc];
+	for(int i = 0; i<setnumber; i++){
+		for(int j = 0; j<assoc; j++){
+			cache[i][j] = malloc(sizeof(Cacheline));
+			cache[i][j]->valid = 0;
+		}
+	}
+
+	//Findings
+	int MemoryReads = 0, MemoryWrites = 0, CacheHits = 0, CacheMisses = 0;
+	//loop through
+	while(fscanf(fp, "%lx: %c %lx", &useless, &command, &memory) == 3){
+		if(command == 'R'){
+			memory = memory>>blockbits;
+			int set = memory & setcomp;
+			
+		}
+		else{
+
+		}
+	}	
+
+	//Final Print
+	printf("Memory reads: %d\nMemory writes: %d\nCache hits: %d\nCache misses: %d\n", MemoryReads, MemoryWrites, CacheHits, CacheMisses);
+}
+
+int checkParams(int argc, char *argv[]){
 	//check if argument count is right
 	if(argc != 6){
 		printf("error\n");
@@ -83,18 +162,9 @@ int main(int argc, char* argv[])
 		printf("error\n");
 		return 1;
 	}	
-
+	return 0;
 	//printf("CHECKS CLEARNED\n");
 
-	//loop through
-	
-	char useless[12];
-	char command;
-	char memory[12];
-	while(fscanf(fp, "0x%s: %c 0x%s", &useless, &command, &memory) == 3){
-		
-	
-	}	
 }
 
 int power_of_2(int n)
