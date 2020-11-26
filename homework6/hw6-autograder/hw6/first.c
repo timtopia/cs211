@@ -18,8 +18,6 @@ int associativityComp(char* str);
 
 int checkParams(int argc, char* argv[]);
 
-char *binaryConversion(char address[]);
-
 int main(int argc, char* argv[])
 {
 	int params = checkParams(argc, argv);
@@ -74,17 +72,73 @@ int main(int argc, char* argv[])
 	//Findings
 	int MemoryReads = 0, MemoryWrites = 0, CacheHits = 0, CacheMisses = 0;
 	//loop through
+	int count = 0;
 	while(fscanf(fp, "%lx: %c %lx", &useless, &command, &memory) == 3){
-		if(command == 'R'){
-			memory = memory>>blockbits;
-			int set = memory & setcomp;
-			
+		count++;
+		int tempcount = count;
+		memory = memory>>blockbits;
+		int set = memory & setcomp;
+		memory = memory>>setbits;
+		int test = 0, test2 = test;
+		for(int i = 0; i < assoc; i++){
+			if(cache[set][i]->tag == memory){
+				if(strcmp(replacement, "lru") == 0){
+					cache[set][i]->replacement = count;
+				}
+				test++;
+				CacheHits++;
+				if(command == 'W'){
+					MemoryWrites++;
+				}
+				break;
+			}
 		}
-		else{
-
+		if(test != test2){continue;}
+		for(int i = 0; i < assoc; i++){
+			if(cache[set][i]->valid == 0){
+				cache[set][i]->valid = 1;
+				CacheMisses++;
+				MemoryReads++;
+				if(command == 'W'){
+					MemoryWrites++;
+				}
+				tempcount++;
+				cache[set][i]->replacement = count;
+				cache[set][i]->tag = memory;
+				break;
+			}
 		}
+		if(count!=tempcount){continue;}
+		Cacheline* temporary;
+		CacheMisses++;
+		int linepos;
+		temporary = cache[set][0];
+		linepos = 0;
+		MemoryReads++;
+		for(int i = 1; i < assoc; i++){
+			if(cache[set][i]->replacement < temporary->replacement){
+				temporary = cache[set][i];
+				linepos = i;
+			}		
+		}
+		if(command == 'W'){
+			MemoryWrites++;
+		}
+		Cacheline* newLine = malloc(sizeof(Cacheline));
+		newLine->valid = 1;
+		newLine->replacement = count;
+		newLine->tag = memory;
+		free(cache[set][linepos]);
+		cache[set][linepos] = newLine;
 	}	
 
+
+	//Free cache sim
+	for(int i = 0; i<setnumber; i++){
+		for(int j = 0; j<assoc; j++){
+				free(cache[i][j]);
+		}
+	}
 	//Final Print
 	printf("Memory reads: %d\nMemory writes: %d\nCache hits: %d\nCache misses: %d\n", MemoryReads, MemoryWrites, CacheHits, CacheMisses);
 }
