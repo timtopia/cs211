@@ -8,7 +8,7 @@
 typedef struct Cacheline{
 	int valid;
 	int replacement;
-	long tag;
+	unsigned long long tag;
 } Cacheline;
 
 
@@ -29,9 +29,9 @@ int main(int argc, char* argv[])
 	
 	FILE* fp = fopen(argv[5], "r");
 	
-	unsigned long useless;
+	unsigned long long useless;
 	char command;
-	unsigned long memory;
+	unsigned long long memory;
 
 	int size = atoi(argv[1]);
 	int blocksize = atoi(argv[4]);
@@ -73,7 +73,7 @@ int main(int argc, char* argv[])
 	int MemoryReads = 0, MemoryWrites = 0, CacheHits = 0, CacheMisses = 0;
 	//loop through
 	int count = 0;
-	while(fscanf(fp, "%lx: %c %lx", &useless, &command, &memory) == 3){
+	while(fscanf(fp, "%llx: %c %llx", &useless, &command, &memory) == 3){
 		count++;
 		int tempcount = count;
 		memory = memory>>blockbits;
