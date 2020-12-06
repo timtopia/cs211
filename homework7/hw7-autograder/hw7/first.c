@@ -200,14 +200,6 @@ int main(int argc, char* argv[])
 				outputCopied = 0;
 			}
 		}
-		for(int i = 0; i < tempfinal; i++){
-			if(strcmp(output, tempnames[i]) == 0){
-				for(int j = 0; j < rows; j++){
-					tempchart[j][i] = outputcopy[j];
-				}
-				outputCopied = 0;
-			}
-		} 
 		if(outputCopied){
 			strcpy(tempnames[tempfinal], output);
 			for(int i = 0; i < rows; i++){
